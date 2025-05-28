@@ -328,6 +328,12 @@ class ADMIN
     public function adminSignout()
     {   
 
+        // Check if the user is logged in
+        if (!isset($_SESSION['adminSession'])) {
+            echo "<script>alert('You are not logged in.'); window.location.href='../../../';</script>";
+            exit;
+        }
+
         $activity = "Has Successfully signed out";
         $user_id = $_SESSION['adminSession'];
         $this->logs($activity, $user_id);
@@ -382,6 +388,45 @@ class ADMIN
         $stmt = $this->conn->prepare($sql);
         return $stmt;
     }
+
+    public function sendResetOtp($email) {
+        if ($email == NULL) {
+            echo "<script>alert('No email found'); window.location.href='../../../';</script>";
+            exit;
+        } else {
+            $stmt = $this->runQuery("SELECT * FROM user WHERE email =:email");
+            $stmt->execute(array(":email" => $email));
+            if ($stmt->rowCount() == 0) {
+                echo "<script>alert('Email not found.'); window.location.href='../../../reset-password.php';</script>";
+                exit;
+            } else {
+                $otp = rand(100000, 999999);
+                $_SESSION['RESET_OTP'] = $otp;
+                $_SESSION['RESET_EMAIL'] = $email;
+                $subject = "Password Reset OTP";
+                $message = "Your OTP for password reset is: $otp";
+                $this->send_email($email, $message, $subject, $this->smtp_email, $this->smtp_password);
+                echo "<script>alert('We sent the OTP to $email'); window.location.href='../../../reset-otp.php';</script>"; // Redirect to reset-otp.php
+            }
+        }
+    }
+
+    public function resetPassword($new_password, $confirm_password, $otp) {
+        if ($otp == $_SESSION['RESET_OTP']) {
+            unset($_SESSION['RESET_OTP']);
+            $email = $_SESSION['RESET_EMAIL'];
+            if ($new_password === $confirm_password) {
+                $hash_password = md5($new_password);
+                $stmt = $this->runQuery("UPDATE user SET password = :password WHERE email = :email");
+                $stmt->execute(array(":password" => $hash_password, ":email" => $email));
+                echo "<script>alert('Password reset successfully!'); window.location.href='../../../index.php';</script>";
+            } else {
+                echo "<script>alert('Passwords do not match.'); window.location.href='../../../reset-password.php';</script>";
+            }
+        } else {
+            echo "<script>alert('Invalid OTP.'); window.location.href='../../../reset-otp.php';</script>"; // Redirect to reset-otp.php
+        }
+    }
 }
 
 if(isset($_POST['btn-signup'])){
@@ -421,5 +466,26 @@ if(isset($_POST['btn-signin'])){
 if(isset($_GET['admin_signout'])){
     $adminSignout = new ADMIN();
     $adminSignout->adminSignout();
+}
+
+if (isset($_POST['btn-forgot-password'])) {
+    $email = trim($_POST['reset_email']);
+    $admin = new ADMIN();
+    $admin->sendResetOtp($email);
+}
+if (isset($_POST['btn-reset-password'])) {
+    $new_password = trim($_POST['new_password']);
+    $confirm_password = trim($_POST['confirm_password']);
+    $otp = trim($_POST['otp']); // Ensure you have the OTP from the form
+    $admin = new ADMIN();
+    $admin->resetPassword($new_password, $confirm_password, $otp);
+
+    if ($resetSuccess) {
+        echo "<script>alert('Password has been reset successfully!'); window.location.href='login.php';</script>";
+        exit;
+    } else {
+        echo "<script>alert('Password reset failed. Please make sure OTP is correct and passwords match.'); window.location.href='reset-password-form.php';</script>";
+        exit;
+    }
 }
 ?>
