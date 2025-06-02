@@ -15,49 +15,94 @@
     <title>Reset Password</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="src/css/styles.css">
-</head>
-<body class="custom-bg d-flex align-items-center justify-content-center min-vh-100">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-12 col-md-6 col-lg-5 col-xl-4">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-white py-3">
-                        <h4 class="card-title text-center mb-0">Reset Password</h4>
-                    </div>
-                    
-                    <div class="card-body p-4">
-                        <form action="dashboard/admin/authentication/admin-class.php" method="POST">
-                            <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
-                            <input type="hidden" name="token" value="<?php echo $_GET['token'] ?? ''; ?>">
-                            
-                            <div class="mb-3">
-                                <label for="newPassword" class="form-label">New Password</label>
-                                <input type="password" class="form-control" id="newPassword" name="new_password" placeholder="Enter your new password" >
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="confirmPassword" class="form-label">Confirm New Password</label>
-                                <input type="password" class="form-control" id="confirmPassword" name="confirm_new_password" placeholder="Confirm your new password" >
-                            </div>
-                            
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-primary py-2" name="btn-reset-password">
-                                    Reset Password
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
 
-                    <div class="card-footer bg-white py-3 text-center">
-                        <p class="text-decoration-none form-links">Remember your password? <a class="text-decoration-none form-links" href="index.php">Sign in</a></p>
+        .form-section {
+            background-color: white;
+            border: 1px solid #dee2e6;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+
+        .form-title {
+            text-align: center;
+            margin-bottom: 1.25rem;
+            color: #212529;
+            font-weight: 500;
+            font-size: 1.5rem;
+        }
+
+        .btn-submit {
+            background-color: #0d6efd;
+            color: white;
+            width: 100%;
+            padding: 0.5rem 0;
+            font-weight: 500;
+            margin-top: 0.5rem;
+        }
+
+        .form-links {
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 575.98px) {
+            .form-section {
+                padding: 1rem;
+            }
+
+            .form-title {
+                font-size: 1.25rem;
+                margin-bottom: 1rem;
+            }
+
+            .btn-submit {
+                padding: 0.4rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-4 py-sm-5">
+        <div class="row justify-content-center">
+            <div class="col-12 col-sm-10 col-md-6 col-lg-5">
+                <div class="form-section">
+                    <h2 class="form-title">Reset Password</h2>
+
+                    <form action="dashboard/admin/authentication/admin-class.php" method="POST">
+                        <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+                        <input type="hidden" name="token" value="<?php echo $_GET['token'] ?? ''; ?>">
+
+                        <div class="mb-3">
+                            <label for="newPassword" class="form-label">New Password</label>
+                            <input type="password" class="form-control" id="newPassword" name="new_password" placeholder="Enter your new password" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                            <input type="password" class="form-control" id="confirmPassword" name="confirm_new_password" placeholder="Confirm your new password" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-submit" name="btn-reset-password">
+                            Reset Password
+                        </button>
+                    </form>
+
+                    <div class="text-center mt-3 form-links">
+                        Remember your password? <a href="index.php" class="text-decoration-none">Sign in</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Bootstrap JS Bundle with Popper -->
+    <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
