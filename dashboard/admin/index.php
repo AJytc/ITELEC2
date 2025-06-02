@@ -1,15 +1,17 @@
 <?php
 require_once 'authentication/admin-class.php';
 
-$admin = new ADMIN();
-if(!$admin->isUserLoggedIn())
-{
-    $admin->redirect('../../');  
+if(!isset($_SESSION['adminSession'])){
+    echo "<script>alert('Please logged in!'); window.location.href='../../';</script>";
+    exit;
 }
+
+$admin = new ADMIN();
 
 $stmt = $admin->runQuery("SELECT * FROM user WHERE id = :id");
 $stmt->execute(array(":id"=>$_SESSION['adminSession']));
 $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

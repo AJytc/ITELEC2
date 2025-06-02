@@ -108,7 +108,7 @@
                             <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
                         </div>
                         
-                        <a href="reset-password.php" class="forgot-password">Forgot Password?</a>
+                        <a href="forgot-password.php" class="forgot-password">Forgot Password?</a>
                        
                         <button type="submit" class="btn btn-submit" name="btn-signin">SIGN IN</button>
                     </form>
